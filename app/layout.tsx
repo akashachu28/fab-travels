@@ -34,12 +34,8 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="relative">
-          <Header/>
-          <div className="absolute top-0 left-0 w-full -z-10">
-            {children}
-          </div>
-        </div>
+        <Header/>
+        {children}
       </body>
     </html>
   );
