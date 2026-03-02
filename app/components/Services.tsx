@@ -51,61 +51,75 @@ const Services = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const ovalScale = 1 + scrollProgress * 20
-  const borderRadius = Math.max(0, 50 - scrollProgress * 50)
+  const easeInOutCubic = (t: number) => {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+  }
+
+  const easedProgress = easeInOutCubic(scrollProgress)
+  const ovalScale = 1 + easedProgress * 20
+  // const imageOpacity = Math.max(0, 1 - easedProgress * 1.5)
 
   return (
     <>
-      <div ref={sectionRef} className='relative h-[250vh] bg-white'>
-        <div className='sticky top-0 h-screen flex items-center justify-center overflow-hidden'>
+      <div ref={sectionRef} className='relative h-full bg-blue-50'>
+        <div className='sticky z-5 top-0 h-screen flex items-center justify-center overflow-hidden'>
           <motion.div 
-            className='bg-blue-50 h-100 w-70'
+            className='relative w-full h-screen'
             style={{ 
               scale: ovalScale,
-              borderRadius: `${borderRadius}%`
             }}
-          />
+            transition={{ ease: "easeInOut" }}
+          >
+            <img
+              src="/assets/windowWith hole.PNG"
+              alt="Window"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </div>
+        
+        {/* Services content positioned below with margin */}
+        <div className="relative -mt-[150vh] pt-[110vh] md:pt-[120vh]">
+          <section className="py-16 md:py-32 px-6 bg-blue-50 overflow-hidden">
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl text-center mb-16 md:mb-24 text-[#00175A]">Our Services</h2>
+              <div className="space-y-32 md:space-y-48">
+                {services.map((service, index) => (
+                  <div
+                    key={index}
+                    className={`flex flex-col ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-8 md:gap-16`}
+                  >
+                    {/* Image - Oval Shape */}
+                    <div className="w-full md:w-1/2 flex justify-center">
+                      <div className="relative w-[400px] h-[400px] md:w-[500px] md:h-[500px]">
+                        <div className={`absolute h-100 w-85 lg:h-130 lg:w-110 ${index === 1 ? '-ml-30 md:ml-0' : 'ml-40 md:ml-0'} inset-0 rounded-[50%] overflow-hidden shadow-2xl`}>
+                          <img
+                            src={service.image}
+                            alt={service.title}
+                            className="w-full h-full object-cover scale-110"
+                          />
+                        </div>
+                        {/* Glow effect */}
+                        <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-[#027FFE]/20 to-[#00175A]/20 blur-3xl -z-10" />
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 md:px-0">
+                      <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/50 rounded-full backdrop-blur-sm">
+                        <service.icon className="w-5 h-5 text-[#027FFE]" />
+                        <span className="text-sm text-[#00175A]">Service</span>
+                      </div>
+                      <h3 className="text-3xl md:text-4xl lg:text-5xl leading-tight text-[#00175A]">{service.title}</h3>
+                      <p className="text-lg md:text-xl text-[#00175A]/70 leading-relaxed">{service.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
       </div>
-
-      <section className="py-32 px-6 bg-blue-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl text-center mb-24 text-[#00175A]">Our Services</h2>
-          <div className="space-y-32 md:space-y-48">
-            {services.map((service, index) => (
-              <div
-                key={index}
-                className={`flex flex-col ${index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} items-center gap-8 md:gap-16`}
-              >
-                {/* Image - Oval Shape */}
-                <div className="w-full md:w-1/2 flex justify-center">
-                  <div className="relative w-[400px] h-[400px] md:w-[500px] md:h-[500px]">
-                    <div className={`absolute h-100 w-85 lg:h-130 lg:w-110 ${index === 1 ? '-ml-30 md:ml-0' : 'ml-40 md:ml-0'} inset-0 rounded-[50%] overflow-hidden shadow-2xl`}>
-                      <img
-                        src={service.image}
-                        alt={service.title}
-                        className="w-full h-full object-cover scale-110"
-                      />
-                    </div>
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 rounded-[50%] bg-gradient-to-br from-[#027FFE]/20 to-[#00175A]/20 blur-3xl -z-10" />
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 md:px-0">
-                  <div className="inline-flex items-center gap-3 px-4 py-2 bg-white/50 rounded-full backdrop-blur-sm">
-                    <service.icon className="w-5 h-5 text-[#027FFE]" />
-                    <span className="text-sm text-[#00175A]">Service</span>
-                  </div>
-                  <h3 className="text-3xl md:text-4xl lg:text-5xl leading-tight text-[#00175A]">{service.title}</h3>
-                  <p className="text-lg md:text-xl text-[#00175A]/70 leading-relaxed">{service.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   )
 }
